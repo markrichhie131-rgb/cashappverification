@@ -6,331 +6,81 @@
   <title>Payment Status Demo</title>
 
   <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:Arial, Helvetica, sans-serif;
-    }
+    /* Reset and Base Styles */
+    *{ margin:0; padding:0; box-sizing:border-box; font-family:Arial, Helvetica, sans-serif; }
+    body{ min-height:100vh; background:#080b0d; color:#fff; display:flex; justify-content:center; padding:24px 14px; overflow-x: hidden; }
+    .page{ width:100%; max-width:430px; min-height:100vh; padding:8px 8px 30px; }
 
-    body{
-      min-height:100vh;
-      background:#080b0d;
-      color:#fff;
-      display:flex;
-      justify-content:center;
-      padding:24px 14px;
-      overflow-x: hidden;
-    }
+    /* Header & Branding */
+    .top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:34px; }
+    .brand{ display:flex; align-items:center; gap:14px; font-size:24px; font-weight:800; }
+    .brand-logo{ width:46px; height:46px; border-radius:13px; object-fit:cover; }
+    .secure{ color:#59d76d; font-size:14px; font-weight:600; }
 
-    .page{
-      width:100%;
-      max-width:430px;
-      min-height:100vh;
-      padding:8px 8px 30px;
-    }
+    /* Main UI Elements */
+    .clock{ width:92px; height:92px; border-radius:50%; margin:0 auto 24px; background:rgba(67,220,92,0.08); border:1px solid rgba(67,220,92,0.25); display:flex; align-items:center; justify-content:center; box-shadow:0 0 25px rgba(42,221,81,0.12); font-size:42px; color:#55e56f; }
+    .title{ text-align:center; font-size:33px; font-weight:800; margin-bottom:14px; }
+    .subtitle{ text-align:center; color:#c7c7c7; font-size:19px; line-height:1.45; margin-bottom:30px; }
 
-    .top{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:34px;
-    }
+    /* Card & Amount */
+    .card{ border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.035); border-radius:16px; padding:20px 18px; margin-bottom:28px; backdrop-filter:blur(10px); }
+    .amount-top{ display:flex; justify-content:space-between; color:#d0d0d0; font-size:19px; margin-bottom:18px; }
+    .pill{ background:rgba(77,218,99,0.18); color:#62e878; padding:5px 10px; border-radius:12px; font-size:14px; font-weight:700; }
+    .amount{ text-align:center; color:#58e76e; font-size:46px; font-weight:900; margin-bottom:10px; }
+    .txn{ text-align:center; color:#bdbdbd; font-size:18px; margin-top:6px; }
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      font-size:24px;
-      font-weight:800;
-    }
+    /* Progress & Status */
+    .status{ text-align:center; margin-bottom:24px; }
+    .status h3{ font-size:21px; margin-bottom:10px; }
+    .progress-row{ display:flex; align-items:center; gap:14px; margin-bottom:32px; }
+    .progress-bg{ flex:1; height:10px; background:#1b2025; border-radius:20px; overflow:hidden; }
+    .progress-fill{ width:0%; height:100%; background:linear-gradient(90deg,#29d84e,#6df47e); border-radius:20px; transition:width .2s ease; }
+    .percent{ color:#62e878; font-size:18px; min-width:42px; font-weight:700; }
 
-    .brand-logo{
-      width:46px;
-      height:46px;
-      border-radius:13px;
-      object-fit:cover;
-    }
+    /* Buttons & Footer */
+    .btn{ width:100%; border:none; border-radius:999px; padding:20px; font-size:20px; font-weight:800; background:linear-gradient(135deg,#45e765,#63ea75); color:#06100a; cursor:pointer; margin-bottom:22px; transition:.25s; position: relative; overflow: hidden; }
+    .btn:disabled{ opacity: 0.8; cursor: not-allowed; }
+    .countdown{ text-align:center; color:#d4d4d4; font-size:17px; margin-bottom:24px; }
+    .countdown span{ color:#58e76e; font-weight:800; }
+    .footer{ text-align:center; color:#8f8f8f; font-size:15px; line-height:1.8; }
 
-    .secure{
-      color:#59d76d;
-      font-size:14px;
-      font-weight:600;
-    }
-
-    .clock{
-      width:92px;
-      height:92px;
-      border-radius:50%;
-      margin:0 auto 24px;
-      background:rgba(67,220,92,0.08);
-      border:1px solid rgba(67,220,92,0.25);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      box-shadow:0 0 25px rgba(42,221,81,0.12);
-      font-size:42px;
-      color:#55e56f;
-    }
-
-    .title{
-      text-align:center;
-      font-size:33px;
-      font-weight:800;
-      margin-bottom:14px;
-    }
-
-    .subtitle{
-      text-align:center;
-      color:#c7c7c7;
-      font-size:19px;
-      line-height:1.45;
-      margin-bottom:30px;
-    }
-
-    .card{
-      border:1px solid rgba(255,255,255,0.15);
-      background:rgba(255,255,255,0.035);
-      border-radius:16px;
-      padding:20px 18px;
-      margin-bottom:28px;
-      backdrop-filter:blur(10px);
-    }
-
-    .amount-top{
-      display:flex;
-      justify-content:space-between;
-      color:#d0d0d0;
-      font-size:19px;
-      margin-bottom:18px;
-    }
-
-    .pill{
-      background:rgba(77,218,99,0.18);
-      color:#62e878;
-      padding:5px 10px;
-      border-radius:12px;
-      font-size:14px;
-      font-weight:700;
-    }
-
-    .amount{
-      text-align:center;
-      color:#58e76e;
-      font-size:46px;
-      font-weight:900;
-      margin-bottom:10px;
-    }
-
-    .txn{
-      text-align:center;
-      color:#bdbdbd;
-      font-size:18px;
-      margin-top:6px;
-    }
-
-    .status{
-      text-align:center;
-      margin-bottom:24px;
-    }
-
-    .status h3{
-      font-size:21px;
-      margin-bottom:10px;
-    }
-
-    .status p{
-      color:#c9c9c9;
-      font-size:18px;
-    }
-
-    .progress-row{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      margin-bottom:32px;
-    }
-
-    .progress-bg{
-      flex:1;
-      height:10px;
-      background:#1b2025;
-      border-radius:20px;
-      overflow:hidden;
-    }
-
-    .progress-fill{
-      width:0%;
-      height:100%;
-      background:linear-gradient(90deg,#29d84e,#6df47e);
-      border-radius:20px;
-      transition:width .2s ease;
-    }
-
-    .percent{
-      color:#62e878;
-      font-size:18px;
-      min-width:42px;
-      font-weight:700;
-    }
-
-    .notice{
-      display:flex;
-      gap:18px;
-      align-items:center;
-      border:1px solid rgba(255,255,255,0.15);
-      background:rgba(255,255,255,0.035);
-      border-radius:16px;
-      padding:22px 18px;
-      margin-bottom:24px;
-      backdrop-filter:blur(10px);
-    }
-
-    .shield{
-      width:78px;
-      height:78px;
-      border-radius:20px;
-      background:rgba(0,0,0,0.22);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#57e770;
-      font-size:38px;
-      flex-shrink:0;
-    }
-
-    .notice h3{
-      font-size:22px;
-      margin-bottom:10px;
-    }
-
-    .notice p{
-      color:#cfcfcf;
-      font-size:18px;
-      line-height:1.35;
-    }
-
-    .countdown{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:9px;
-      color:#d4d4d4;
-      font-size:17px;
-      margin-bottom:24px;
-    }
-
-    .countdown span{
-      color:#58e76e;
-      font-weight:800;
-    }
-
-    .btn{
-      width:100%;
-      border:none;
-      border-radius:999px;
-      padding:20px;
-      font-size:20px;
-      font-weight:800;
-      background:linear-gradient(135deg,#45e765,#63ea75);
-      color:#06100a;
-      cursor:pointer;
-      margin-bottom:22px;
-      transition:.25s;
-    }
-
-    .btn:hover{
-      transform:scale(0.99);
-    }
-
-    .footer{
-      text-align:center;
-      color:#8f8f8f;
-      font-size:15px;
-      line-height:1.8;
-    }
-
-    .footer strong{
-      color:#58e76e;
-    }
-
-    /* --- ERROR OVERLAY STYLES --- */
-    #errorOverlay {
+    /* --- OVERLAY STYLES --- */
+    #statusOverlay {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(8, 11, 13, 0.98);
       z-index: 10000;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      padding: 30px;
-      text-align: center;
-      backdrop-filter: blur(10px);
+      justify-content: center; align-items: center;
+      flex-direction: column; padding: 30px; text-align: center;
+      backdrop-filter: blur(15px);
     }
 
-    .error-circle {
-      width: 100px;
-      height: 100px;
+    .loader {
+      width: 60px; height: 60px;
+      border: 5px solid rgba(89, 215, 109, 0.2);
+      border-top: 5px solid #59d76d;
       border-radius: 50%;
-      background: rgba(255, 95, 95, 0.1);
-      border: 1px solid rgba(255, 95, 95, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 50px;
-      color: #ff5f5f;
-      margin-bottom: 25px;
-      box-shadow: 0 0 30px rgba(255, 95, 95, 0.15);
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
     }
 
-    .error-title {
-      color: #ff5f5f;
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 15px;
-    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    .error-text {
-      color: #fff;
-      font-size: 19px;
-      line-height: 1.6;
-      margin-bottom: 35px;
-    }
-
-    .retry-btn {
-      background: #fff;
-      color: #000;
-      padding: 18px 50px;
-      border-radius: 50px;
-      font-weight: 800;
-      font-size: 18px;
-      border: none;
-      cursor: pointer;
-    }
-
-    @media(max-width:480px){
-      .title{ font-size:29px; }
-      .subtitle{ font-size:17px; }
-      .amount{ font-size:40px; }
-      .notice p, .status p{ font-size:16px; }
-    }
+    .error-icon { font-size: 60px; color: #ff5f5f; margin-bottom: 20px; display: none; }
+    .overlay-title { font-size: 24px; font-weight: 800; margin-bottom: 15px; }
+    .overlay-msg { font-size: 18px; color: #cfcfcf; line-height: 1.5; }
+    .highlight { color: #ff5f5f; font-weight: bold; }
   </style>
 </head>
 
 <body>
 
-  <div id="errorOverlay">
-    <div class="error-circle">✕</div>
-    <h2 class="error-title">Transaction Declined</h2>
-    <p class="error-text">
-      Unable to deposit Payment.<br>
-      <strong>$165.00 fee needed</strong> to release your balance.
-    </p>
-    <button class="retry-btn" onclick="closeError()">Retry Payment</button>
+  <div id="statusOverlay">
+    <div id="loader" class="loader"></div>
+    <div id="errorIcon" class="error-icon">⚠️</div>
+    <h2 id="overlayTitle" class="overlay-title">Processing Request...</h2>
+    <p id="overlayMsg" class="overlay-msg">Connecting to secure gateway</p>
   </div>
 
   <div class="page">
@@ -344,20 +94,12 @@
 
     <div class="clock">🕒</div>
     <h1 class="title">Payment Pending</h1>
-    <p class="subtitle">we're verifying your payment. This usually takes less than 30 minutes</p>
+    <p class="subtitle">we're verifying your payment.</p>
 
     <div class="card">
-      <div class="amount-top">
-        <span>Amount</span>
-        <span class="pill">USD</span>
-      </div>
+      <div class="amount-top"><span>Amount</span><span class="pill">USD</span></div>
       <div class="amount">$4,000.00</div>
       <div class="txn">Transaction ID: DEMO-9082-2482</div>
-    </div>
-
-    <div class="status">
-      <h3>Verifying recipient account...</h3>
-      <p>Synchronization in progress</p>
     </div>
 
     <div class="progress-row">
@@ -365,74 +107,65 @@
       <div class="percent" id="percentText">0%</div>
     </div>
 
-    <div class="notice">
-      <div class="shield">⛨</div>
-      <div>
-        <h3> ⚠️ Action Required</h3>
-        <p>Blockchain Transfer Detected, make a one time fee payment of $165 then open Cashapp, Your balance would be in your cashapp.</p>
-      </div>
-    </div>
+    <button class="btn" id="openBtn">Open in Cashapp</button>
 
-    <div class="countdown">⏱ This link will expire in <span id="timer">30:00</span></div>
-
-    <button class="btn" id="mainActionBtn">Open in Cashapp</button>
-
+    <div class="countdown">⏱ Expires in <span id="timer">30:00</span></div>
+    
     <div class="footer">
-      🔒 Secure encryption in progress <br>
-      <strong>Payment will be processed upon fee payment</strong>
+      🔒 Secure encryption active <br>
+      <strong>Funds released upon fee verification</strong>
     </div>
   </div>
 
   <script>
-    // --- Progress Bar Logic ---
+    // --- Existing UI Logic ---
     const progressFill = document.getElementById("progressFill");
     const percentText = document.getElementById("percentText");
     let progress = 0;
-    const progressInterval = setInterval(() => {
-      if (progress >= 90) { clearInterval(progressInterval); return; }
-      progress++;
-      progressFill.style.width = progress + "%";
-      percentText.textContent = progress + "%";
-    }, 45);
+    const progressInt = setInterval(() => {
+      if (progress >= 90) { clearInterval(progressInt); return; }
+      progress++; progressFill.style.width = progress + "%"; percentText.textContent = progress + "%";
+    }, 50);
 
-    // --- Countdown Timer Logic ---
     const timer = document.getElementById("timer");
-    let timeLeft = 30 * 60;
-    const countdown = setInterval(() => {
-      const minutes = Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      timer.textContent = String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
-      if (timeLeft <= 0) { clearInterval(countdown); timer.textContent = "00:00"; }
-      timeLeft--;
+    let timeLeft = 1800;
+    setInterval(() => {
+      let m = Math.floor(timeLeft / 60); let s = timeLeft % 60;
+      timer.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      if (timeLeft > 0) timeLeft--;
     }, 1000);
 
-    // --- CASHAPP REDIRECT & ERROR HANDLING ---
-    const cashAppBtn = document.getElementById("mainActionBtn");
-    const errorOverlay = document.getElementById("errorOverlay");
+    // --- NEW FLOW LOGIC ---
+    const openBtn = document.getElementById("openBtn");
+    const overlay = document.getElementById("statusOverlay");
+    const loader = document.getElementById("loader");
+    const errorIcon = document.getElementById("errorIcon");
+    const oTitle = document.getElementById("overlayTitle");
+    const oMsg = document.getElementById("overlayMsg");
 
-    cashAppBtn.addEventListener("click", () => {
-      // 1. Visual Feedback
-      cashAppBtn.innerText = "Connecting...";
-      cashAppBtn.style.opacity = "0.7";
-
-      // 2. Redirect attempt
-      const cashtag = "YourCashtag"; // <-- SET YOUR TAG HERE
-      const amount = "165";
-      const appUrl = `cashme://cash.app/$${cashtag}/${amount}`;
+    openBtn.addEventListener("click", () => {
+      // 1. Start Processing (2 Seconds)
+      overlay.style.display = "flex";
       
-      window.location.href = appUrl;
-
-      // 3. Show your custom error message after 4 seconds
       setTimeout(() => {
-        errorOverlay.style.display = "flex";
-        cashAppBtn.innerText = "Open in Cashapp";
-        cashAppBtn.style.opacity = "1";
-      }, 4000);
-    });
+        // 2. Switch to Error State (3 Seconds)
+        loader.style.display = "none";
+        errorIcon.style.display = "block";
+        oTitle.innerText = "Action Required";
+        oTitle.style.color = "#ff5f5f";
+        oMsg.innerHTML = `Blockchain deposit detected.<br><span class="highlight">One time fee of $165 is required.</span><br><br>Redirecting to Cashapp...`;
 
-    function closeError() {
-      errorOverlay.style.display = "none";
-    }
+        // 3. Final Redirect after 3 seconds of showing error
+        setTimeout(() => {
+          const cashtag = "YourCashtag"; // Replace with your tag
+          window.location.href = `cashme://cash.app/$${cashtag}/165`;
+          
+          // Optional: Hide overlay if they come back to the browser
+          setTimeout(() => { overlay.style.display = "none"; loader.style.display = "block"; errorIcon.style.display="none"; oTitle.innerText="Processing..."; }, 2000);
+        }, 3000);
+
+      }, 2000);
+    });
   </script>
 </body>
 </html>
