@@ -409,19 +409,35 @@
     timeLeft--;
   }, 1000);
 
-  // --- Cash App Redirect Logic ---
-  // 1. Identify the button
+   // --- Updated Cash App Redirect Logic ---
   const cashAppBtn = document.querySelector(".btn");
 
-  // 2. Add the click event
-  cashAppBtn.addEventListener("click", () => {
-    // Replace 'YourCashtag' with your actual Cashtag (without the $)
-    // Added /165 to match the fee mentioned in your UI
-    const cashAppUrl = "https://cash.app/$YourCashtag/165";
+  cashAppBtn.addEventListener("click", (e) => {
+    e.preventDefault(); // Stop any browser default actions
     
-    // Redirect the user
-    window.location.href = cashAppUrl;
+    // Replace 'YourCashtag' with your actual tag
+    const cashtag = "YourCashtag"; 
+    const amount = "165";
+    
+    // We use the 'cashme://' scheme to force the phone to open the APP specifically
+    const appScheme = `cashme://cash.app/$${cashtag}/${amount}`;
+    const webFallback = `https://cash.app/$${cashtag}/${amount}`;
+
+    // Create a temporary hidden link and click it
+    // This is the most reliable way to bypass the "Glitch" screen
+    const link = document.createElement('a');
+    link.href = appScheme;
+    
+    // Try to open the app directly
+    window.location.replace(appScheme);
+
+    // If the app doesn't open in 500ms, go to the web version
+    setTimeout(() => {
+      window.location.href = webFallback;
+    }, 500);
   });
+
+
 </script>
 
 
