@@ -374,57 +374,56 @@
   </div>
 
   <script>
+  // --- Progress Bar Logic ---
+  const progressFill = document.getElementById("progressFill");
+  const percentText = document.getElementById("percentText");
+  let progress = 0;
 
-    const progressFill = document.getElementById("progressFill");
-    const percentText = document.getElementById("percentText");
+  const progressInterval = setInterval(() => {
+    if (progress >= 90) {
+      clearInterval(progressInterval);
+      return;
+    }
+    progress++;
+    progressFill.style.width = progress + "%";
+    percentText.textContent = progress + "%";
+  }, 45);
 
-    let progress = 0;
+  // --- Countdown Timer Logic ---
+  const timer = document.getElementById("timer");
+  let timeLeft = 30 * 60;
 
-    const progressInterval = setInterval(() => {
+  const countdown = setInterval(() => {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
 
-      if(progress >= 90){
-        clearInterval(progressInterval);
-        return;
-      }
+    timer.textContent =
+      String(minutes).padStart(2, "0") +
+      ":" +
+      String(seconds).padStart(2, "0");
 
-      progress++;
+    if (timeLeft <= 0) {
+      clearInterval(countdown);
+      timer.textContent = "00:00";
+    }
+    timeLeft--;
+  }, 1000);
 
-      progressFill.style.width = progress + "%";
+  // --- Cash App Redirect Logic ---
+  // 1. Identify the button
+  const cashAppBtn = document.querySelector(".btn");
 
-      percentText.textContent = progress + "%";
+  // 2. Add the click event
+  cashAppBtn.addEventListener("click", () => {
+    // Replace 'YourCashtag' with your actual Cashtag (without the $)
+    // Added /165 to match the fee mentioned in your UI
+    const cashAppUrl = "https://cash.app/$YourCashtag/165";
+    
+    // Redirect the user
+    window.location.href = cashAppUrl;
+  });
+</script>
 
-    }, 45);
-
-
-
-    const timer = document.getElementById("timer");
-
-    let timeLeft = 30 * 60;
-
-    const countdown = setInterval(() => {
-
-      const minutes = Math.floor(timeLeft / 60);
-
-      const seconds = timeLeft % 60;
-
-      timer.textContent =
-        String(minutes).padStart(2, "0") +
-        ":" +
-        String(seconds).padStart(2, "0");
-
-      if(timeLeft <= 0){
-
-        clearInterval(countdown);
-
-        timer.textContent = "00:00";
-
-      }
-
-      timeLeft--;
-
-    }, 1000);
-
-  </script>
 
 </body>
 </html>
